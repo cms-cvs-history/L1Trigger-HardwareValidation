@@ -1,0 +1,10 @@
+module l1Compare = L1Comparator {
+    untracked string RCT_dataLabel = "L1RCTRegionSumsEmCands"
+    untracked string RCT_emulLabel = "L1RCTRegionSumsEmCands"
+    untracked string GCT_dataLabel = "L1GCTEmuDigis"
+    untracked string GCT_emulLabel = "L1GctEmuDigis"
+    untracked string GT_dataLabel  = "gtModule"
+    untracked string GT_emulLabel  = "gtModule"
+    untracked string DumpFile      = "dump.txt"
+    untracked vuint32 COMPARE_COLLS= { 0,0,0 }
+}
