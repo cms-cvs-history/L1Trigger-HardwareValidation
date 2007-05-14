@@ -1,4 +1,8 @@
 module l1Compare = L1Comparator {
+    untracked string ETP_dataLabel = "ecalTriggerPrimitiveDigis"
+    untracked string ETP_emulLabel = "ecalTriggerPrimitiveDigis"
+    untracked string HTP_dataLabel = "hcalTriggerPrimitiveDigis"
+    untracked string HTP_emulLabel = "hcalTriggerPrimitiveDigis"
     untracked string RCT_dataLabel = "L1RCTRegionSumsEmCands"
     untracked string RCT_emulLabel = "L1RCTRegionSumsEmCands"
     untracked string GCT_dataLabel = "L1GCTEmuDigis"
@@ -6,5 +10,6 @@ module l1Compare = L1Comparator {
     untracked string GT_dataLabel  = "gtModule"
     untracked string GT_emulLabel  = "gtModule"
     untracked string DumpFile      = "dump.txt"
-    untracked vuint32 COMPARE_COLLS= { 0,0,0 }
+    untracked int32  DumpMode      = 0
+    untracked vuint32 COMPARE_COLLS= { 0,0,0,0 }
 }
