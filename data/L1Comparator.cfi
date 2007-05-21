@@ -1,15 +1,31 @@
 module l1Compare = L1Comparator {
-    untracked string ETP_dataLabel = "ecalTriggerPrimitiveDigis"
-    untracked string ETP_emulLabel = "ecalTriggerPrimitiveDigis"
-    untracked string HTP_dataLabel = "hcalTriggerPrimitiveDigis"
-    untracked string HTP_emulLabel = "hcalTriggerPrimitiveDigis"
-    untracked string RCT_dataLabel = "L1RCTRegionSumsEmCands"
-    untracked string RCT_emulLabel = "L1RCTRegionSumsEmCands"
-    untracked string GCT_dataLabel = "L1GCTEmuDigis"
-    untracked string GCT_emulLabel = "L1GctEmuDigis"
-    untracked string GT_dataLabel  = "gtModule"
-    untracked string GT_emulLabel  = "gtModule"
+    InputTag ETP_dataLabel = ecalTriggerPrimitiveDigis
+    InputTag ETP_emulLabel = ecalTriggerPrimitiveDigis
+    InputTag HTP_dataLabel = hcalTriggerPrimitiveDigis
+    InputTag HTP_emulLabel = hcalTriggerPrimitiveDigis
+    InputTag RCT_dataLabel = L1RCTRegionSumsEmCands
+    InputTag RCT_emulLabel = L1RCTRegionSumsEmCands
+    InputTag GCT_dataLabel = L1GctEmuDigis
+    InputTag GCT_emulLabel = L1GctEmuDigis
+    InputTag DTP_dataLabel = l1DTTPGEmulDigis
+    InputTag DTP_emulLabel = l1DTTPGEmulDigis
+    InputTag DTF_dataLabel = l1DttfEmulDigis
+    InputTag DTF_emulLabel = l1DttfEmulDigis
+    InputTag CTP_dataLabel = l1CscTpgEmulDigis
+    InputTag CTP_emulLabel = l1CscTpgEmulDigis
+    InputTag CTF_dataLabel = l1CscTfEmulDigis
+    InputTag CTF_emulLabel = l1CscTfEmulDigis
+    InputTag RPC_dataLabel = l1RpcEmulDigis
+    InputTag RPC_emulLabel = l1RpcEmulDigis
+    InputTag LTC_dataLabel = none
+    InputTag LTC_emulLabel = none
+    InputTag GMT_dataLabel = l1GmtEmulDigis
+    InputTag GMT_emulLabel = l1GmtEmulDigis
+    InputTag GT_dataLabel  = gtModule
+    InputTag GT_emulLabel  = gtModule
     untracked string DumpFile      = "dump.txt"
     untracked int32  DumpMode      = 0
-    untracked vuint32 COMPARE_COLLS= { 0,0,0,0 }
+    untracked vuint32 COMPARE_COLLS= { 0,0,0,0,0,0,0,0,0,0,0,0 }
+   #compareMode {ETP,HTP,RCT,GCT,DTP,DTF,CTP,CTF,RPC,LTC,GMT,GT};
+
 }
