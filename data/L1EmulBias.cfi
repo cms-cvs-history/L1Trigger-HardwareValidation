@@ -1,0 +1,18 @@
+module l1bias = L1EmulBias {
+    InputTag ETPsource = ecalTriggerPrimitiveDigis
+    InputTag HTPsource = hcalTriggerPrimitiveDigis
+    InputTag RCTsource = l1RctEmulDigis
+    InputTag GCTsource = l1GctEmulDigis
+    InputTag DTPsource = l1DTTPGEmulDigis
+    InputTag DTFsource = l1DttfEmulDigis
+    InputTag CTPsource = l1CscTpgEmulDigis
+    InputTag CTFsource = l1CscTfEmulDigis
+    InputTag CTTsource = l1CscTfTrackEmulDigis
+    InputTag RPCsource = l1RpcEmulDigis
+    InputTag LTCsource = none
+    InputTag GMTsource = l1GmtEmulDigis
+    InputTag GLTsource = gtModule
+    untracked int32 VerboseFlag = 0
+    untracked vuint32 DO_SYSTEM = { 0,0,0,0,0,0,0,0,0,0,0,0 }
+    #sys list {ETP,HTP,RCT,GCT,DTP,DTF,CTP,CTF,RPC,LTC,GMT,GT};
+}
