@@ -1,31 +1,38 @@
-module l1Compare = L1Comparator {
-    InputTag ETP_dataLabel = ecalTriggerPrimitiveDigis
-    InputTag ETP_emulLabel = ecalTriggerPrimitiveDigis
-    InputTag HTP_dataLabel = hcalTriggerPrimitiveDigis
-    InputTag HTP_emulLabel = hcalTriggerPrimitiveDigis
-    InputTag RCT_dataLabel = L1RCTRegionSumsEmCands
-    InputTag RCT_emulLabel = L1RCTRegionSumsEmCands
-    InputTag GCT_dataLabel = L1GctEmuDigis
-    InputTag GCT_emulLabel = L1GctEmuDigis
-    InputTag DTP_dataLabel = l1DTTPGEmulDigis
-    InputTag DTP_emulLabel = l1DTTPGEmulDigis
-    InputTag DTF_dataLabel = l1DttfEmulDigis
-    InputTag DTF_emulLabel = l1DttfEmulDigis
-    InputTag CTP_dataLabel = l1CscTpgEmulDigis
-    InputTag CTP_emulLabel = l1CscTpgEmulDigis
-    InputTag CTF_dataLabel = l1CscTfEmulDigis
-    InputTag CTF_emulLabel = l1CscTfEmulDigis
-    InputTag RPC_dataLabel = l1RpcEmulDigis
-    InputTag RPC_emulLabel = l1RpcEmulDigis
-    InputTag LTC_dataLabel = none
-    InputTag LTC_emulLabel = none
-    InputTag GMT_dataLabel = l1GmtEmulDigis
-    InputTag GMT_emulLabel = l1GmtEmulDigis
-    InputTag GT_dataLabel  = gtModule
-    InputTag GT_emulLabel  = gtModule
+module l1compare = L1Comparator {
+    InputTag ETPsourceData = ecalTriggerPrimitiveDigis
+    InputTag ETPsourceEmul = ecalTriggerPrimitiveDigis
+    InputTag HTPsourceData = hcalTriggerPrimitiveDigis
+    InputTag HTPsourceEmul = hcalTriggerPrimitiveDigis
+    InputTag RCTsourceData = l1RctEmulDigis
+    InputTag RCTsourceEmul = l1RctEmulDigis
+    InputTag GCTsourceData = l1GctEmulDigis
+    InputTag GCTsourceEmul = l1GctEmulDigis
+    InputTag DTPsourceData = l1DTTPGEmulDigis
+    InputTag DTPsourceEmul = l1DTTPGEmulDigis
+    InputTag DTFsourceData = l1DttfEmulDigis
+    InputTag DTFsourceEmul = l1DttfEmulDigis
+    InputTag CTPsourceData = l1CscTpgEmulDigis
+    InputTag CTPsourceEmul = l1CscTpgEmulDigis
+    InputTag CTFsourceData = l1CscTfEmulDigis
+    InputTag CTFsourceEmul = l1CscTfEmulDigis
+    InputTag CTTsourceData = l1CscTfTrackEmulDigis
+    InputTag CTTsourceEmul = l1CscTfTrackEmulDigis
+    InputTag RPCsourceData = l1RpcEmulDigis
+    InputTag RPCsourceEmul = l1RpcEmulDigis
+    InputTag LTCsourceData = none
+    InputTag LTCsourceEmul = none
+    InputTag GMTsourceData = l1GmtEmulDigis
+    InputTag GMTsourceEmul = l1GmtEmulDigis
+    InputTag GLTsourceData = gtModule
+    InputTag GLTsourceEmul = gtModule
+    untracked int32  FEDid = 735
+    untracked InputTag FEDsourceData = none
+    untracked InputTag FEDsourceEmul = none
+    untracked int32  VerboseFlag   = 0
     untracked string DumpFile      = "dump.txt"
     untracked int32  DumpMode      = 0
     untracked vuint32 COMPARE_COLLS= { 0,0,0,0,0,0,0,0,0,0,0,0 }
-   #compareMode {ETP,HTP,RCT,GCT,DTP,DTF,CTP,CTF,RPC,LTC,GMT,GT};
+   #compareMode  {ETP,HTP,RCT,GCT,DTP,DTF,CTP,CTF,RPC,LTC,GMT,GT};
+   #enum specified in L1DataEmulDigi.h
 
 }
