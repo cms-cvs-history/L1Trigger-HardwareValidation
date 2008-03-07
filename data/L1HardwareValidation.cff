@@ -1,0 +1,148 @@
+// Standard L1 Emulator-Hardware comparison sequences
+//
+// J. Brooke, N. Leonardo
+//
+// Use the sequences for your favourite subsystem alone,
+// or all of them together ( L1HardwareValidation )
+// Note that these sequences will require the addition
+// of emulator configuration producers, along with
+// fake/frontier conditions
+
+// Standard RawToDigi
+include "Configuration/StandardSequences/data/RawToDigi.cff"
+
+// Comparator module
+include "L1Trigger/HardwareValidation/data/L1Comparator.cfi"
+
+// ECAL sequence
+module ecalTpgEmulDigis = ecalTriggerPrimitiveDigis from "SimCalorimetry/EcalTrigPrimProducers/data/ecalTriggerPrimitiveDigis.cfi"
+replace ecalTpgEmulDigis.Label = "ecalDigis"
+
+sequence deEcal = {
+  ecalDigis,
+  ecalTpgEmulDigis,
+  l1compare
+}
+
+// HCAL sequence
+module hcalTpgEmulDigis = hcalTriggerPrimitiveDigis from "SimCalorimetry/HcalTrigPrimProducers/data/hcaltpdigis.cfi"
+replace inputLabel = hcalDigis
+
+sequence deHcal = {
+  hcalDigis,
+  hcalTpgEmulDigis,
+  l1compare
+}
+
+// RCT sequence
+module rctEmulDigis = rctDigis from "L1Trigger/RegionalCaloTrigger/data/rctDigis.cfi"
+replace rctEmulDigis.ecalDigisLabel = ecalDigis
+replace rctEmulDigis.hcalDigisLabel = hcalDigis
+
+sequence deRct = {
+  ecalDigis &
+  hcalDigis,
+  rctEmulDigis,
+  l1compare
+}
+
+// GCT sequence
+module gctEmulDigis = rctDigis from "L1Trigger/GlobalCaloTrigger/data/gctDigis.cfi"
+replace gctEmulDigis.inputLabel = gctDigis
+
+sequence deRct = {
+  gctDigis,
+  gctEmulDigis,
+  l1compare
+}
+
+// DT TPG sequence
+module dtTpgEmulDigis = dtTriggerPrimitiveDigis from "L1Trigger/DTTrigger/data/rctDigis.cfi"
+//replace dtTpgEmulDigis.inputLabel = muonDTDigis
+// there is not input tag parameter for DT TPG!
+
+sequence deDt = {
+  muonDTDigis,
+  dtTpgEmulDigis,
+  l1compare
+}
+
+// DT TF sequence
+module dttfEmulDigis = dttfDigis from "L1Trigger/DTTrackFinder/data/dttfDigis.cfi"
+replace dttfEmulDigis.DTDigi_Source = dttfDigis
+//replace dttfEmulDigis.CSCStub_Source = dttfDigis
+// not clear where CSC stub input should come from!
+
+sequence deDttf = {
+  dttfDigis,
+  dtTpgEmulDigis,
+  l1compare
+}
+
+// CSC TPG sequence
+module cscTpgEmulDigis = cscTriggerPrimitiveDigis from "L1Trigger/CSCTriggerPrimitives/data/cscTriggerPrimitiveDigis.cfi"
+replace cscTpgEmulDIgis.CSCComparatorDigiProducer = muonCSCDigis:MuonCSCComparatorDigi
+replace cscTpgEmulDigis.CSCWireDigiProducer       = muonCSCDigis:MuonCSCWireDigi
+
+sequence deCsc = {
+  muonCSCDigis,
+  cscTpgEmulDigis,
+  l1compare
+}
+
+// CSC TF sequence
+module csctfTrackEmulDigis = csctfTrackDigis from "L1Trigger/CSCTrackFinder/data/csctfTrackDigis.cfi"
+replace csctfTrackEmulDigis.SectorReceiverInput = csctfDigis
+replace csctfTrackEmulDigis.DTProducer = dttfDigis
+
+module csctfEmulDigis = csctfDigis from "L1Trigger/CSCTrackFinder/data/csctfDigis.cfi"
+replace csctfEmulDigis.CSCTrackProducer = csctfTrackEmulDigis
+
+sequence deCsctf = {
+  csctfDigis,
+  csctfTrackEmulDigis,
+  csctfEmulDigis,
+  l1compare
+}
+
+// GMT sequence
+module gmtEmulDigis = gmtDigis from "L1Trigger/GlobalMuonTrigger/data/gmtDigis.cfi"
+replace gmtEmulDigis.DTCandidates = dttfDigis:DT
+replace gmtEmulDigis.CSCCandidates = csctfDigis:CSC
+replace gmtEmulDigis.RPCbCandidates = rpcTriggerDigis:RPCb
+replace gmtEmulDigis.RPCfCandidates = rpcTriggerDigis:RPCf
+//replace gmtEmulDigis.MipIsoData =
+// right?!?
+
+sequence deGmt = {
+  gtDigis,
+  gmtEmulDigis,
+  l1compare
+}
+
+// GT sequence
+module gtEmulDigis = gtDigis from "L1Trigger/GlobalTrigger/data/gtDigis.cfi"
+replace gtEmulDigis.gmtInputTag = gtDigis
+replace gtEmulDigis.gctInputTag = gctDigis
+//replace gtEmulDigis.TechnicalTriggerInputTag = gtDigis
+// right?!?
+
+sequence deGt = {
+  gtDigis &
+  gctDigis,
+  gtEmulDigis,
+  l1compare
+}
+
+sequence L1HardwareValidation = {
+  deEcal &
+  deHcal &
+  deRct &
+  deGct &
+  deCsc &
+  deCsctf &
+  deDt &
+  deDttf &
+  deGmt &
+  deGt 
+}
