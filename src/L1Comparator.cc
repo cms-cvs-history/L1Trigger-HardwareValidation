@@ -86,6 +86,7 @@ L1Comparator::L1Comparator(const edm::ParameterSet& iConfig) {
       << " L1Comparator::L1Comparator() : "
       << " couldn't open dump file " << m_dumpFileName.c_str() << std::endl;
 
+  /// dump level:  -1(all),0(none),1(disagree),2(loc.disagree),3(loc.agree)
   m_dumpMode = iConfig.getUntrackedParameter<int>("DumpMode",0);  
 
   m_match = true;
@@ -208,10 +209,15 @@ L1Comparator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     iEvent.getByLabel(m_DEsource[DTP][0],dtp_th_data_);
     iEvent.getByLabel(m_DEsource[DTP][1],dtp_th_emul_);
   }
-  L1MuDTChambPhDigiCollection const* dtp_ph_data = dtp_ph_data_->getContainer();
-  L1MuDTChambPhDigiCollection const* dtp_ph_emul = dtp_ph_emul_->getContainer();
-  L1MuDTChambThDigiCollection const* dtp_th_data = dtp_th_data_->getContainer();
-  L1MuDTChambThDigiCollection const* dtp_th_emul = dtp_th_emul_->getContainer();
+  L1MuDTChambPhDigiCollection const* dtp_ph_data = 0; 
+  L1MuDTChambPhDigiCollection const* dtp_ph_emul = 0; 
+  L1MuDTChambThDigiCollection const* dtp_th_data = 0; 
+  L1MuDTChambThDigiCollection const* dtp_th_emul = 0; 
+
+  if(dtp_ph_data_.isValid()) dtp_ph_data = dtp_ph_data_->getContainer();
+  if(dtp_ph_emul_.isValid()) dtp_ph_emul = dtp_ph_emul_->getContainer();
+  if(dtp_th_data_.isValid()) dtp_th_data = dtp_th_data_->getContainer();
+  if(dtp_th_emul_.isValid()) dtp_th_emul = dtp_th_emul_->getContainer();
 
   // -- DTF [drift tube track finder]
   edm::Handle<L1MuRegionalCandCollection> dtf_data;
@@ -225,10 +231,10 @@ L1Comparator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     iEvent.getByLabel(m_DEsource[DTF][1].label(),"DT",dtf_emul);
     iEvent.getByLabel(m_DEsource[DTF][0].label(),"DTTF",dtf_trk_data_);
     iEvent.getByLabel(m_DEsource[DTF][1].label(),"DTTF",dtf_trk_emul_);
-  }  
-  if(dtf_trk_data_.isValid())
+  } 
+  if(dtf_trk_data_.isValid())			 
     dtf_trk_data = dtf_trk_data_->getContainer();
-  if(dtf_trk_emul_.isValid())
+  if(dtf_trk_emul_.isValid())			 
     dtf_trk_emul = dtf_trk_emul_->getContainer();
   
   // -- CTP [cathod strip chamber trigger primitive]
@@ -546,8 +552,8 @@ L1Comparator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   isValid[GMT] = ((        gmt_data .isValid()) && (        gmt_emul .isValid()));
   isValid[GMT]&= ((    gmt_rdt_data_.isValid()) && (    gmt_rdt_emul_.isValid()));
   isValid[GLT] = ((    glt_rdt_data .isValid()) && (    glt_rdt_emul .isValid()));
-  isValid[GLT]&= ((    glt_evm_data .isValid()) && (    glt_evm_emul .isValid()));
-  isValid[GLT]&= ((    glt_obj_data .isValid()) && (    glt_obj_emul .isValid()));
+  //isValid[GLT]&= ((    glt_evm_data .isValid()) && (    glt_evm_emul .isValid()));
+  //isValid[GLT]&= ((    glt_obj_data .isValid()) && (    glt_obj_emul .isValid()));
 
 
   if(verbose()) {
@@ -558,7 +564,7 @@ L1Comparator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   }
 
   //reset flags...
-  for(int i=0; i<DEnsys; i++) isValid[i]=true;
+  //for(int i=0; i<DEnsys; i++) isValid[i]=true;
 
   if(verbose())
     std::cout << "L1Comparator start processing the collections.\n" << std::flush;
@@ -593,11 +599,18 @@ L1Comparator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   if(m_doSys[GMT]&&isValid[GMT]) process<L1MuGMTCandCollection>          (    gmt_can_data,     gmt_can_emul, GMT);
 
   // >>---- GLT ---- <<  
-  std::vector<bool> gtword_d(128,false);
-  std::vector<bool> gtword_e(128,false);
+  GltDEDigi gltdigimon;
+  
+  if(m_doSys[GLT] && isValid[GMT] ) {
 
-  if(m_doSys[GLT]) {
-    if(dumpEvent_) {
+    ///tmp: for getting a clean dump (avoid empty entries)
+    bool prt = false; 
+    if(!m_dumpMode)
+      prt = false;
+    else if(m_dumpMode==-1)
+      prt=true;
+
+    if(dumpEvent_ && prt) {
       m_dumpFile << "\nEntry: " << nevt_ 
 		 << " (event:"  << evtNum_
 		 << " | run:"   << runNum_ 
@@ -607,8 +620,18 @@ L1Comparator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     m_dumpFile << "\n  GT...\n";
 
     if(glt_rdt_data.isValid() && glt_rdt_emul.isValid()) {
-      gtword_d = glt_rdt_data->decisionWord();
-      gtword_e = glt_rdt_emul->decisionWord();
+      
+      //fill gt mon info
+      bool globalDBit[2];
+      std::vector<bool> gltDecBits[2], gltTchBits[2];
+      globalDBit[0] = glt_rdt_data->decision();
+      globalDBit[1] = glt_rdt_emul->decision();
+      gltDecBits[0] = glt_rdt_data->decisionWord();
+      gltDecBits[1] = glt_rdt_emul->decisionWord();
+      gltTchBits[0] = glt_rdt_data->gtFdlWord().gtTechnicalTriggerWord();
+      gltTchBits[1] = glt_rdt_emul->gtFdlWord().gtTechnicalTriggerWord();
+      gltdigimon.set(globalDBit, gltDecBits, gltTchBits);
+
       DEncand[GLT][0]=1; DEncand[GLT][1]=1;
       DEmatchEvt[GLT]  = compareCollections(glt_rdt_data, glt_rdt_emul);  
     }
@@ -665,8 +688,7 @@ L1Comparator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   
   // >>---- d|e record ---- <<  
   std::auto_ptr<L1DataEmulRecord> record
-    (new L1DataEmulRecord(evt_match,m_doSys,DEmatchEvt,DEncand,m_dedigis));
-  record->set_gltbits(gtword_d,gtword_e);
+    (new L1DataEmulRecord(evt_match,m_doSys,DEmatchEvt,DEncand,m_dedigis, gltdigimon));
   if(verbose()) {
     std::cout << "\n [L1Comparator] printing DErecord" 
 	      << "(entry:"<< nevt_ 
@@ -716,7 +738,7 @@ void L1Comparator::process(T const* data, T const* emul, const int sys) {
     prt = false;
   else if(m_dumpMode==-1)
     prt=true;
-  else if(m_dumpMode==1) {
+  else if(m_dumpMode>0) {
     DEcompare<T> tmp(data,emul);
     if(tmp.get_ncand(0)==0 && tmp.get_ncand(1)==0)
       prt=false;
@@ -1159,6 +1181,7 @@ L1Comparator::compareCollections(edm::Handle<L1GlobalTriggerEvmReadoutRecord> da
   return match;
 }
 
+/*following record is not produced by hardware, included for sw dump/tests only*/
 bool
 L1Comparator::compareCollections(edm::Handle<L1GlobalTriggerObjectMapRecord> data, 
 				 edm::Handle<L1GlobalTriggerObjectMapRecord> emul) {
@@ -1175,38 +1198,25 @@ L1Comparator::compareCollections(edm::Handle<L1GlobalTriggerObjectMapRecord> dat
     match &= ( data_ovec.at(idx).algoName()               == emul_ovec.at(idx).algoName()               );
     match &= ( data_ovec.at(idx).algoBitNumber()          == emul_ovec.at(idx).algoBitNumber()	        );
     match &= ( data_ovec.at(idx).algoGtlResult()          == emul_ovec.at(idx).algoGtlResult()	        );
-    match &= ( data_ovec.at(idx).algoLogicalExpression()  == emul_ovec.at(idx).algoLogicalExpression()  );
-    match &= ( data_ovec.at(idx).algoNumericalExpression()== emul_ovec.at(idx).algoNumericalExpression());
     match &= ( data_ovec.at(idx).combinationVector()      == emul_ovec.at(idx).combinationVector()	);
-    match &= ( data_ovec.at(idx).objectTypeVector()       == emul_ovec.at(idx).objectTypeVector()       );
   }
 
   if(m_dumpMode==0 && match)
     return match;
   
   // dump
-  int idx = 0;//?
+  int idx = 0;
   m_dumpFile << "\n\tL1GlobalTriggerObjectMap";
   m_dumpFile << "\n\tdata: "
 	     << " algorithmName:"         << data_ovec.at(idx).algoName()
 	     << " Bitnumber:"             << data_ovec.at(idx).algoBitNumber()
-	     << " GTLresult:"             << data_ovec.at(idx).algoGtlResult()
-	     << " combinationVectorSize:" << data_ovec.at(idx).combinationVector().size() 
-	     << " objectTypeVectorSize:"  << data_ovec.at(idx).objectTypeVector().size() << "\n\t"
-	     << " nlogicalExpression:"    << data_ovec.at(idx).algoLogicalExpression()   << "\n\t"
-	     << " numericalExpression:"   << data_ovec.at(idx).algoNumericalExpression();
+	     << " GTLresult:"             << data_ovec.at(idx).algoGtlResult();
   m_dumpFile << "\n\temul: "
 	     << " algorithmName:"         << emul_ovec.at(idx).algoName()
 	     << " Bitnumber:"             << emul_ovec.at(idx).algoBitNumber()
 	     << " GTLresult:"             << emul_ovec.at(idx).algoGtlResult()
-	     << " combinationVectorSize:" << emul_ovec.at(idx).combinationVector().size() 
-	     << " objectTypeVectorSize:"  << emul_ovec.at(idx).objectTypeVector().size()  << "\n\t"
-	     << " logicalExpression:"     << emul_ovec.at(idx).algoLogicalExpression()    << "\n\t"
-	     << " numericalExpression:"   << emul_ovec.at(idx).algoNumericalExpression()
 	     << "\n" << std::endl;
 
-  /// todo: dump combinationVector(), objectTypeVector()
-  
   char ok[10];
   if(match) sprintf(ok,"successful");
   else      sprintf(ok,"failed");
