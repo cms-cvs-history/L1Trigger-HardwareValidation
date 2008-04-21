@@ -14,6 +14,7 @@ include "Configuration/StandardSequences/data/RawToDigi.cff"
 // Comparator module
 include "L1Trigger/HardwareValidation/data/L1Comparator.cfi"
 
+
 // ECAL sequence
 module ecalTpgEmulDigis = ecalTriggerPrimitiveDigis from "SimCalorimetry/EcalTrigPrimProducers/data/ecalTriggerPrimitiveDigis.cfi"
 replace ecalTpgEmulDigis.Label = "ecalDigis"
@@ -23,6 +24,7 @@ sequence deEcal = {
   ecalTpgEmulDigis
 }
 
+
 // HCAL sequence
 module hcalTpgEmulDigis = hcalTriggerPrimitiveDigis from "SimCalorimetry/HcalTrigPrimProducers/data/hcaltpdigi.cfi"
 replace hcalTpgEmulDigis.inputLabel = hcalDigis
@@ -31,6 +33,7 @@ sequence deHcal = {
   hcalDigis,
   hcalTpgEmulDigis
 }
+
 
 // RCT sequence
 module rctEmulDigis = rctDigis from "L1Trigger/RegionalCaloTrigger/data/rctDigis.cfi"
@@ -43,6 +46,7 @@ sequence deRct = {
   rctEmulDigis
 }
 
+
 // GCT sequence
 module gctEmulDigis = gctDigis from "L1Trigger/GlobalCaloTrigger/data/gctDigis.cfi"
 replace gctEmulDigis.inputLabel = gctDigis
@@ -51,6 +55,7 @@ sequence deGct = {
   gctDigis,
   gctEmulDigis
 }
+
 
 // DT TPG sequence
 module dttpgEmulDigis = dtTriggerPrimitiveDigis from "L1Trigger/DTTrigger/data/dtTriggerPrimitiveDigis.cfi"
@@ -122,6 +127,7 @@ sequence deGt = {
   gctDigis,
   gtEmulDigis
 }
+
 
 sequence L1HardwareValidation = {
   deEcal &
