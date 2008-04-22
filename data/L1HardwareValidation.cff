@@ -73,13 +73,14 @@ sequence deDt = {
 // DT TF sequence
 module dttfEmulDigis = dttfDigis from "L1Trigger/DTTrackFinder/data/dttfDigis.cfi"
 replace dttfEmulDigis.DTDigi_Source = dttfDigis
-replace dttfEmulDigis.CSCStub_Source = csctfDigis
+replace dttfEmulDigis.CSCStub_Source = csctfTrackEmulDigis
 //replace dttfEmulDigis.CSCStub_Source = dttfDigis
 // not clear where CSC stub input should come from!
 
 sequence deDttf = {
   dttfDigis &
   csctfDigis,
+  csctfTrackEmulDigis,
   dttfEmulDigis
 }
 
