@@ -122,10 +122,10 @@ sequence deRpc = {
 
 // GMT sequence
 module gmtEmulDigis = gmtDigis from "L1Trigger/GlobalMuonTrigger/data/gmtDigis.cfi"
-replace gmtEmulDigis.DTCandidates = dttfDigis:DT
-replace gmtEmulDigis.CSCCandidates = csctfDigis:CSC
-replace gmtEmulDigis.RPCbCandidates = rpcTriggerDigis:RPCb
-replace gmtEmulDigis.RPCfCandidates = rpcTriggerDigis:RPCf
+replace gmtEmulDigis.DTCandidates = gtDigis:DT
+replace gmtEmulDigis.CSCCandidates = gtDigis:CSC
+replace gmtEmulDigis.RPCbCandidates = gtDigis:RPCb
+replace gmtEmulDigis.RPCfCandidates = gtDigis:RPCf
 //replace gmtEmulDigis.MipIsoData =
 // right?!?
 
