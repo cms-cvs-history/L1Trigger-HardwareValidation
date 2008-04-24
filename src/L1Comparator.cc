@@ -209,15 +209,10 @@ L1Comparator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
     iEvent.getByLabel(m_DEsource[DTP][0],dtp_th_data_);
     iEvent.getByLabel(m_DEsource[DTP][1],dtp_th_emul_);
   }
-  L1MuDTChambPhDigiCollection const* dtp_ph_data = 0; 
-  L1MuDTChambPhDigiCollection const* dtp_ph_emul = 0; 
-  L1MuDTChambThDigiCollection const* dtp_th_data = 0; 
-  L1MuDTChambThDigiCollection const* dtp_th_emul = 0; 
-
-  if(dtp_ph_data_.isValid()) dtp_ph_data = dtp_ph_data_->getContainer();
-  if(dtp_ph_emul_.isValid()) dtp_ph_emul = dtp_ph_emul_->getContainer();
-  if(dtp_th_data_.isValid()) dtp_th_data = dtp_th_data_->getContainer();
-  if(dtp_th_emul_.isValid()) dtp_th_emul = dtp_th_emul_->getContainer();
+  L1MuDTChambPhDigiCollection const* dtp_ph_data = dtp_ph_data_->getContainer();
+  L1MuDTChambPhDigiCollection const* dtp_ph_emul = dtp_ph_emul_->getContainer();
+  L1MuDTChambThDigiCollection const* dtp_th_data = dtp_th_data_->getContainer();
+  L1MuDTChambThDigiCollection const* dtp_th_emul = dtp_th_emul_->getContainer();
 
   // -- DTF [drift tube track finder]
   edm::Handle<L1MuRegionalCandCollection> dtf_data;
@@ -615,16 +610,8 @@ L1Comparator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
   // >>---- GLT ---- <<  
   GltDEDigi gltdigimon;
   
-  if(m_doSys[GLT] && isValid[GLT] ) {
-
-    ///tmp: for getting a clean dump (avoid empty entries)
-    bool prt = false; 
-    if(!m_dumpMode)
-      prt = false;
-    else if(m_dumpMode==-1)
-      prt=true;
-
-    if(dumpEvent_ && prt) {
+  if(m_doSys[GLT]) {
+    if(dumpEvent_) {
       m_dumpFile << "\nEntry: " << nevt_ 
 		 << " (event:"  << evtNum_
 		 << " | run:"   << runNum_ 
@@ -642,8 +629,6 @@ L1Comparator::produce(edm::Event& iEvent, const edm::EventSetup& iSetup) {
       globalDBit[1] = glt_rdt_emul->decision();
       gltDecBits[0] = glt_rdt_data->decisionWord();
       gltDecBits[1] = glt_rdt_emul->decisionWord();
-      //gltTchBits[0] = glt_rdt_data->gtFdlWord().gtTechnicalTriggerWord();
-      //gltTchBits[1] = glt_rdt_emul->gtFdlWord().gtTechnicalTriggerWord();
       gltTchBits[0] = glt_rdt_data->technicalTriggerWord();
       gltTchBits[1] = glt_rdt_emul->technicalTriggerWord();
       gltdigimon.set(globalDBit, gltDecBits, gltTchBits);
@@ -850,12 +835,10 @@ L1Comparator::compareCollections(edm::Handle<L1GlobalTriggerReadoutRecord> data,
 
   m_dumpFile << "\n L1GlobalTriggerReadoutRecord candidates...\n";
 
-  bool thematch = true;
+  bool match = true;
   
-  thematch &= (*data==*emul);
+  match &= (*data==*emul);
   
-  bool match = thematch;
-
   if(m_dumpMode==0 && match)
     return match;    
   
@@ -875,23 +858,16 @@ L1Comparator::compareCollections(edm::Handle<L1GlobalTriggerReadoutRecord> data,
   match &= (data->gtFdlWord()           == emul->gtFdlWord()    );
   m_dumpFile << " gtFdlWord:" << match; 	        
   match &= (data->muCollectionRefProd() == emul->muCollectionRefProd());
-  m_dumpFile << " muCollectionRefProd:" << match << "\n"; 
-  boost::uint16_t dt_psb_bid=0, em_psb_bid=0;    
-  size_t npsbw = (data_->gtPsbVector().size()>emul_->gtPsbVector().size())?
-    emul_->gtPsbVector().size():data_->gtPsbVector().size();
-  for(int idx=0; idx<(int)npsbw; idx++) {
+  m_dumpFile << " muCollectionRefProd:" << match; 
+  uint16_t dt_psb_bid=0, em_psb_bid=0;    
+  for(int idx=0; idx<(int)data_->gtPsbVector().size(); idx++)
     if(data_->gtPsbVector().at(idx) != emul_->gtPsbVector().at(idx) ) {
       //match &= false;
       dt_psb_bid = data_->gtPsbVector().at(idx).boardId();
       em_psb_bid = emul_->gtPsbVector().at(idx).boardId();
       break;
     }
-  }
   match &= (data->gtPsbWord(dt_psb_bid) == emul->gtPsbWord(em_psb_bid) );
-  //if(!match) {
-  //  m_dumpFile << "  data"; data_->gtPsbWord(dt_psb_bid).print(m_dumpFile);
-  //  m_dumpFile << "\nemul"; emul_->gtPsbWord(em_psb_bid).print(m_dumpFile);
-  //}
   //problem: vector not accessible from handle (only reference non-const)
   //std::vector<L1GtPsbWord>& data_psbVec = data_->gtPsbVector();
   //std::vector<L1GtPsbWord>& emul_psbVec = emul_->gtPsbVector();
@@ -1057,7 +1033,7 @@ L1Comparator::compareCollections(edm::Handle<L1GlobalTriggerReadoutRecord> data,
   m_dumpFile << " ...L1GlobalTriggerReadoutRecord data and emulator comparison: " 
 	   << ok << std::endl;
 
-  return thematch;
+  return match;
 }
 
 
@@ -1219,7 +1195,8 @@ L1Comparator::compareCollections(edm::Handle<L1GlobalTriggerObjectMapRecord> dat
   const std::vector<L1GlobalTriggerObjectMap>& data_ovec = data->gtObjectMap();
   const std::vector<L1GlobalTriggerObjectMap>& emul_ovec = emul->gtObjectMap();
 
-  for(std::vector<L1GtLogicParser::OperandToken>::size_type idx=0; idx<data_ovec.size(); idx++) {
+  
+  for(std::vector<L1GtLogicParser::OperandToken>::size_type idx=0; idx<(int)data_ovec.size(); idx++) {
     match &= ( data_ovec.at(idx).algoName()               == emul_ovec.at(idx).algoName()               );
     match &= ( data_ovec.at(idx).algoBitNumber()          == emul_ovec.at(idx).algoBitNumber()	        );
     match &= ( data_ovec.at(idx).algoGtlResult()          == emul_ovec.at(idx).algoGtlResult()	        );
