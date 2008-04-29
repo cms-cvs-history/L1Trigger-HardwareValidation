@@ -81,7 +81,6 @@ replace valCscTriggerPrimitiveDigis.CSCComparatorDigiProducer = muonCSCDigis:Muo
 replace valCscTriggerPrimitiveDigis.CSCWireDigiProducer       = muonCSCDigis:MuonCSCWireDigi
 
 sequence deCsc = {
-  muonCSCDigis,
   valCscTriggerPrimitiveDigis
 }
 
