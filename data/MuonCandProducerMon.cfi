@@ -1,0 +1,4 @@
+module extramuonproducer = MuonCandProducerMon {
+    untracked InputTag CSCinput = csctfunpacker
+    untracked int32 VerboseFlag = 0
+}
