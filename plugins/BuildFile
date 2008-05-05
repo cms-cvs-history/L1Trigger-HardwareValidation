@@ -1,7 +1,6 @@
 <use name=FWCore/Framework>
 <use name=FWCore/PluginManager>
 <use name=FWCore/ParameterSet>
-<use name=DQMServices/CoreROOT>
 <use name=FWCore/MessageLogger>
 <use name=L1Trigger/HardwareValidation>
 <use name=DataFormats/EcalDigi>
@@ -16,6 +15,7 @@
 <use name=DataFormats/L1Trigger>
 <use name=DataFormats/FEDRawData>
 <use name=FastSimulation/Utilities>
+<use name=L1Trigger/CSCTrackFinder>
 
 <library file=*.cc name=L1TriggerHardwareValidationPlugins>
 <flags EDM_PLUGIN=1>
