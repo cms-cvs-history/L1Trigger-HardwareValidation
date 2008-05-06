@@ -1,0 +1,82 @@
+#Based on: 
+# Configuration/StandardSequences/data/RawToDigi.cff
+# David Lange, Bryan Dahmes LLNL
+# 30 April, 2007
+# nuno.leonardo@cern.ch, update for Global Run, L1 Mon usage 
+
+#--- Allow for multiple calls to the database ---#
+include "CondCore/DBCommon/data/CondDBSetup.cfi" 
+
+#--- Geometry Setup ---#
+include "Geometry/CMSCommonData/data/cmsIdealGeometryXML.cfi"
+include "MagneticField/Engine/data/volumeBasedMagneticField.cfi"
+include "Geometry/TrackerGeometryBuilder/data/trackerGeometry.cfi"
+include "Geometry/TrackerNumberingBuilder/data/trackerNumberingGeometry.cfi"
+include "HLTrigger/Configuration/data/rawToDigi/EcalGeometrySetup.cff"
+include "Geometry/DTGeometry/data/dtGeometry.cfi"
+include "Geometry/RPCGeometry/data/rpcGeometry.cfi"
+
+#-------------------------#
+#--- RawToDigi modules ---#
+#-------------------------#
+#--- L1 Setup ---#
+include "L1TriggerConfig/L1ScalesProducers/data/L1MuTriggerScalesConfig.cff"
+include "L1TriggerConfig/L1ScalesProducers/data/L1MuTriggerPtScaleConfig.cff"
+include "L1TriggerConfig/L1ScalesProducers/data/L1MuGMTScalesConfig.cff"
+include "L1TriggerConfig/GctConfigProducers/data/L1GctConfig.cff"
+include "L1TriggerConfig/L1GtConfigProducers/data/L1GtConfig.cff"
+include "L1TriggerConfig/GMTConfigProducers/data/L1MuGMTParametersConfig.cff"
+#--- CSC TF ---#
+module csctfDigis = csctfunpacker from "EventFilter/CSCTFRawToDigi/data/csctfunpacker.cfi"
+replace csctfDigis.producer = source
+#--- DT TF ---#
+module dttfDigis = dttfunpacker from "EventFilter/DTTFRawToDigi/data/dttfunpacker.cfi"
+replace dttfDigis.DTTF_FED_Source = source
+#--- GCT ---#
+module gctDigis = l1GctHwDigis from "EventFilter/GctRawToDigi/data/l1GctHwDigis.cfi"
+replace gctDigis.inputLabel = source
+#--- GT ---#
+module gtDigis = l1GtUnpack from "EventFilter/L1GlobalTriggerRawToDigi/data/l1GtUnpack.cfi"
+replace gtDigis.DaqGtInputTag = source
+#--- SiPixel ---#
+#include "EventFilter/SiPixelRawToDigi/data/SiPixelRawToDigi.cfi"
+#replace siPixelDigis.InputLabel = "source"
+#--- SiStrip ---#
+#include "EventFilter/SiStripRawToDigi/data/SiStripRawToDigis_standard.cff"
+#--- Ecal ---#
+include "SimCalorimetry/EcalTrigPrimProducers/data/ecalTriggerPrimitiveDigis.cff"
+module ecalDigis = ecalEBunpacker from "EventFilter/EcalRawToDigiDev/data/EcalUnpackerData.cfi"
+replace ecalDigis.DoRegional = false 
+replace ecalDigis.InputLabel = "source"
+#--- Ecal Preshower ---#
+#module ecalPreshowerDigis = esRawToDigi from "EventFilter/ESRawToDigi/data/esRawToDigi.cfi"
+#replace ecalPreshowerDigis.Label = "source"
+#--- Hcal ---#
+module hcalDigis = hcalDigis from "EventFilter/HcalRawToDigi/data/HcalRawToDigi.cfi"
+replace hcalDigis.InputLabel = source
+#--- CSC ---#
+module muonCSCDigis = muonCSCDigis from "EventFilter/CSCRawToDigi/data/cscUnpacker.cfi"
+replace muonCSCDigis.InputObjects = source
+replace muonCSCDigis.UseExaminer = false
+#--- DT ---#
+module muonDTDigis = muonDTDigis from "EventFilter/DTRawToDigi/data/dtunpacker.cfi"
+replace muonDTDigis.fedColl = "source"
+#--- RPC ---#
+module muonRPCDigis = rpcunpacker from "EventFilter/RPCRawToDigi/data/rpcUnpacker.cfi"
+replace muonRPCDigis.InputLabel = source
+
+sequence RawToDigi = { 
+                        csctfDigis &
+                        dttfDigis &
+                        gctDigis &
+                        gtDigis &
+                        #siPixelDigis &
+                        #SiStripRawToDigis &
+                        ecalDigis &
+                        #ecalPreshowerDigis &
+                        hcalDigis &
+                        muonCSCDigis &
+                        muonDTDigis &
+                        muonRPCDigis
+                     }
+
