@@ -1,4 +1,4 @@
-// Standard L1 Emulator-Hardware comparison sequences
+// L1 Emulator-Hardware comparison sequences -- Global Run
 //
 // J. Brooke, N. Leonardo
 //
@@ -142,19 +142,24 @@ replace valGtDigis.GmtInputTag = gtDigis
 replace valGtDigis.GctInputTag = gctDigis
 //replace valGtDigis.TechnicalTriggerInputTag = ???
 
-sequence deGt = {
+sequence deGt = { 
   valGtDigis
 }
 
 
 // the comparator module
 include "L1Trigger/HardwareValidation/data/L1Comparator.cfi"
-replace l1compare.ETPsourceData = ecalDigis
+
+#note: cruzet-i, no tp's readout
+replace l1compare.ETPsourceData = valEcalTriggerPrimitiveDigis //ecalDigis
 replace l1compare.ETPsourceEmul = valEcalTriggerPrimitiveDigis
+
 replace l1compare.HTPsourceData = hcalDigis
 replace l1compare.HTPsourceEmul = valHcalTriggerPrimitiveDigis
+
 replace l1compare.RCTsourceData = gctDigis
 replace l1compare.RCTsourceEmul = valRctDigis
+
 replace l1compare.GCTsourceData = gctDigis
 replace l1compare.GCTsourceEmul = valGctDigis
 
@@ -164,13 +169,6 @@ replace l1compare.DTPsourceEmul = valDtTriggerPrimitiveDigis
 replace l1compare.DTFsourceData = muonDtMon:DT //dttfDigis
 replace l1compare.DTFsourceEmul = valDttfDigis
 
-   //tpg's comparison: csctf-readout vs csc-emulator
-//    replace l1compare.CTPsourceData = csctfunpacker
-//    replace l1compare.CTPsourceEmul = cscTriggerPrimitiveDigis:MPCSORTED
-
-    //tpg's comparison: csc-readout vs csc-emulator
-    //replace l1compare.CTPsourceData = muonCSCDigis:MuonCSCCorrelatedLCTDigi
-    //replace l1compare.CTPsourceEmul = cscTriggerPrimitiveDigis
 
 //tpg's comparison: csctf-readout vs csc-emulator
 replace l1compare.CTPsourceData = csctfDigis
@@ -184,12 +182,16 @@ replace l1compare.CTFsourceData = muonCscMon:CSC //csctfDigis
 replace l1compare.CTFsourceEmul = valCsctfDigis:CSC
 replace l1compare.CTTsourceData = csctfDigis
 replace l1compare.CTTsourceEmul = valCsctfTrackDigis
+
 replace l1compare.RPCsourceData = gtDigis
 replace l1compare.RPCsourceEmul = valRpcTriggerDigis
+
 replace l1compare.GMTsourceData = gmtDigis
 replace l1compare.GMTsourceEmul = valGmtDigis
+
 replace l1compare.GLTsourceData = gtDigis
 replace l1compare.GLTsourceEmul = valGtDigis
+
 #replace l1compare.COMPARE_COLLS= { 0,0,0,0,0,0,0,0,0,0,0,0 }
 #compareMode  {ETP,HTP,RCT,GCT, DTP,DTF,CTP,CTF,RPC, LTC,GMT,GT};
 
