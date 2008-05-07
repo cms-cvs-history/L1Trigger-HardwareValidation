@@ -32,7 +32,8 @@ sequence deHcal = {
 // RCT sequence
 // requires ecalDigis and hcalDigis
 include "L1Trigger/RegionalCaloTrigger/data/maskedRctInputDigis.cfi"
-replace maskedRctInputDigis.ecalDigisLabel = ecalDigis
+#cruzet-i: no ecal tp's, need emulation instead:
+replace maskedRctInputDigis.ecalDigisLabel = valEcalTriggerPrimitiveDigis //ecalDigis
 replace maskedRctInputDigis.hcalDigisLabel = hcalDigis
 module valRctDigis = rctDigis from "L1Trigger/RegionalCaloTrigger/data/rctDigis.cfi"
 replace valRctDigis.ecalDigisLabel = maskedRctInputDigis
