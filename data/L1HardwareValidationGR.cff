@@ -186,7 +186,7 @@ replace l1compare.CTTsourceEmul = valCsctfTrackDigis
 replace l1compare.RPCsourceData = gtDigis
 replace l1compare.RPCsourceEmul = valRpcTriggerDigis
 
-replace l1compare.GMTsourceData = gmtDigis
+replace l1compare.GMTsourceData = gtDigis
 replace l1compare.GMTsourceEmul = valGmtDigis
 
 replace l1compare.GLTsourceData = gtDigis
