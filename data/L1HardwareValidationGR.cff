@@ -170,14 +170,13 @@ replace l1compare.DTPsourceEmul = valDtTriggerPrimitiveDigis
 replace l1compare.DTFsourceData = muonDtMon:DT //dttfDigis
 replace l1compare.DTFsourceEmul = valDttfDigis
 
-
-//tpg's comparison: csctf-readout vs csc-emulator
+//csc tp comparison 
+// i: csctf-readout vs csc-emulator
 replace l1compare.CTPsourceData = csctfDigis
 replace l1compare.CTPsourceEmul = valCscTriggerPrimitiveDigis:MPCSORTED
-//tpg's comparison: csc-readout vs csc-emulator
+// ii:csc-readout vs csc-emulator
 #replace l1compare.CTPsourceData = muonCSCDigis:MuonCSCCorrelatedLCTDigi
 #replace l1compare.CTPsourceEmul = valCscTriggerPrimitiveDigis
-
 
 replace l1compare.CTFsourceData = muonCscMon:CSC //csctfDigis
 replace l1compare.CTFsourceEmul = valCsctfDigis:CSC
@@ -197,16 +196,16 @@ replace l1compare.GLTsourceEmul = valGtDigis
 #compareMode  {ETP,HTP,RCT,GCT, DTP,DTF,CTP,CTF,RPC, LTC,GMT,GT};
 
 sequence L1HardwareValidation = {
-  deEcal &
-  deHcal &
-  deRct &
-  deGct &
-  deDt &
-  deDttf &
-  deCsc &
-  deCsctf &
-  deRpc &
-  deGmt &
-  deGt ,
-  l1compare
+    deEcal  &
+    deHcal  &
+    deRct   &
+    deGct   &
+    deDt    &
+    deDttf  &
+    deCsc   &
+    deCsctf &
+    deRpc   &
+    deGmt   &
+    deGt    ,
+    l1compare
 }
