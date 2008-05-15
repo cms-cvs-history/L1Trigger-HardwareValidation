@@ -1,4 +1,4 @@
-// Standard L1 Emulator-Hardware comparison sequences
+// L1 Emulator-Hardware comparison sequences -- Global Run
 //
 // J. Brooke, N. Leonardo
 //
@@ -32,11 +32,11 @@ sequence deHcal = {
 // RCT sequence
 // requires ecalDigis and hcalDigis
 module valRctDigis = rctDigis from "L1Trigger/RegionalCaloTrigger/data/rctDigis.cfi"
-replace valRctDigis.ecalDigisLabel = ecalDigis
-replace valRctDigis.hcalDigisLabel = hcalDigis
+replace valRctDigis.ecalDigisLabel = valEcalTriggerPrimitiveDigis
+replace valRctDigis.hcalDigisLabel = valHcalTriggerPrimitiveDigis
 
 sequence deRct = {
-  valRctDigis
+    valRctDigis
 }
 
 
@@ -53,7 +53,7 @@ sequence deGct = {
 // DT TPG sequence
 // requires muonDTDigis only
 module valDtTriggerPrimitiveDigis = dtTriggerPrimitiveDigis from "L1Trigger/DTTrigger/data/dtTriggerPrimitiveDigis.cfi"
-//replace valDtTriggerPrimitiveDigis.inputLabel = muonDTDigis
+replace valDtTriggerPrimitiveDigis.digiTag = muonDTDigis
 
 sequence deDt = {
   valDtTriggerPrimitiveDigis
@@ -68,9 +68,13 @@ replace valDttfDigis.DTDigi_Source = dttfDigis
 replace valDttfDigis.CSCStub_Source = valCsctfTrackDigis
 //replace valDttfDigis.CSCStub_Source = csctfDigis
 
+module muonDtMon = muonCandMon from "L1Trigger/HardwareValidation/data/MuonCandProducerMon.cfi"
+replace muonDtMon.CSCinput = dttfDigis
+
 sequence deDttf = {
-  valCsctfTrackDigis,
-  valDttfDigis
+    valCsctfTrackDigis,
+    valDttfDigis,
+    muonDtMon
 }
 
 
@@ -89,14 +93,19 @@ sequence deCsc = {
 // requires csctfDigis and dttfDigis
 module valCsctfTrackDigis = csctfTrackDigis from "L1Trigger/CSCTrackFinder/data/csctfTrackDigis.cfi"
 replace valCsctfTrackDigis.SectorReceiverInput = csctfDigis
+#replace valCsctfTrackDigis.useDT               = false
 replace valCsctfTrackDigis.DTproducer = dttfDigis
 
 module valCsctfDigis = csctfDigis from "L1Trigger/CSCTrackFinder/data/csctfDigis.cfi"
 replace valCsctfDigis.CSCTrackProducer = valCsctfTrackDigis
 
+module muonCscMon = muonCandMon from "L1Trigger/HardwareValidation/data/MuonCandProducerMon.cfi"
+replace muonCscMon.CSCinput = csctfDigis
+
 sequence deCsctf = {
-  valCsctfTrackDigis,
-  valCsctfDigis
+    valCsctfTrackDigis,
+    valCsctfDigis,
+    muonCscMon
 }
 
 
@@ -129,50 +138,28 @@ replace valGtDigis.GmtInputTag = gtDigis
 replace valGtDigis.GctInputTag = gctDigis
 //replace valGtDigis.TechnicalTriggerInputTag = ???
 
-sequence deGt = {
+sequence deGt = { 
   valGtDigis
 }
 
 
 // the comparator module
 include "L1Trigger/HardwareValidation/data/L1Comparator.cfi"
-replace l1compare.ETPsourceData = ecalDigis
-replace l1compare.ETPsourceEmul = valEcalTriggerPrimitiveDigis
-replace l1compare.HTPsourceData = hcalDigis
-replace l1compare.HTPsourceEmul = valHcalTriggerPrimitiveDigis
-replace l1compare.RCTsourceData = gctDigis
-replace l1compare.RCTsourceEmul = valRctDigis
-replace l1compare.GCTsourceData = gctDigis
-replace l1compare.GCTsourceEmul = valGctDigis
-replace l1compare.DTPsourceData = muonDTDigis
-replace l1compare.DTPsourceEmul = valDtTriggerPrimitiveDigis
-replace l1compare.DTFsourceData = dttfDigis
-replace l1compare.DTFsourceEmul = valDttfDigis
-replace l1compare.CTPsourceData = muonCSCDigis
-replace l1compare.CTPsourceEmul = valCscTriggerPrimitiveDigis
-replace l1compare.CTFsourceData = csctfDigis
-replace l1compare.CTFsourceEmul = valCsctfDigis
-replace l1compare.CTTsourceData = csctfDigis
-replace l1compare.CTTsourceEmul = valCsctfTrackDigis
-replace l1compare.RPCsourceData = rpcTriggerDigis
-replace l1compare.RPCsourceEmul = valRpcTriggerDigis
-replace l1compare.GMTsourceData = gmtDigis
-replace l1compare.GMTsourceEmul = valGmtDigis
-replace l1compare.GLTsourceData = gtDigis
-replace l1compare.GLTsourceEmul = valGtDigis
-replace l1compare.COMPARE_COLLS= { 0,0,0,0,0,0,0,0,0,0,0,0 }
+
+#replace l1compare.COMPARE_COLLS= { 0,0,0,0,0,0,0,0,0,0,0,0 }
+#compareMode  {ETP,HTP,RCT,GCT, DTP,DTF,CTP,CTF,RPC, LTC,GMT,GT};
 
 sequence L1HardwareValidation = {
-  deEcal &
-  deHcal &
-  deRct &
-  deGct &
-  deDt &
-  deDttf &
-  deCsc &
-  deCsctf &
-  deRpc &
-  deGmt &
-  deGt ,
-  l1compare
+    deEcal  &
+    deHcal  &
+    deRct   &
+    deGct   &
+    deDt    &
+    deDttf  &
+    deCsc   &
+    deCsctf &
+    deRpc   &
+    deGmt   &
+    deGt    ,
+    l1compare
 }
