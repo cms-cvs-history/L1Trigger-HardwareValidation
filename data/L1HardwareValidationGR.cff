@@ -9,7 +9,7 @@
 
 // ECAL sequence
 // requires ecalDigis only
-module valEcalTriggerPrimitiveDigis = simEcalTriggerPrimitiveDigis from "SimCalorimetry/EcalTrigPrimProducers/data/ecalTriggerPrimitiveDigis.cfi"
+module valEcalTriggerPrimitiveDigis = ecalTriggerPrimitiveDigis from "SimCalorimetry/EcalTrigPrimProducers/data/ecalTriggerPrimitiveDigis.cfi"
 replace valEcalTriggerPrimitiveDigis.Label = "ecalDigis"
 replace valEcalTriggerPrimitiveDigis.InstanceEB = "ebDigis"
 replace valEcalTriggerPrimitiveDigis.InstanceEE = "eeDigis"
@@ -21,7 +21,7 @@ sequence deEcal = {
 
 // HCAL sequence
 // requires hcalDigis only
-module valHcalTriggerPrimitiveDigis = simHcalTriggerPrimitiveDigis from "SimCalorimetry/HcalTrigPrimProducers/data/hcaltpdigi.cfi"
+module valHcalTriggerPrimitiveDigis = hcalTriggerPrimitiveDigis from "SimCalorimetry/HcalTrigPrimProducers/data/hcaltpdigi.cfi"
 replace valHcalTriggerPrimitiveDigis.inputLabel = hcalDigis
 
 sequence deHcal = {
