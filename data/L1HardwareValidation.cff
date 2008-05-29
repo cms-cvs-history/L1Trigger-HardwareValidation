@@ -182,7 +182,7 @@ replace l1compare.GMTsourceEmul = valGmtDigis
 replace l1compare.GLTsourceData = gtDigis
 replace l1compare.GLTsourceEmul = valGtDigis
 
-replace l1compare.COMPARE_COLLS= { 1,1,1,1,1,1,1,1,1,1,1,1 }
+replace l1compare.COMPARE_COLLS= { 1,1,1,1,1,1,1,1,1,1,1,0 }
 //compareMode  {ETP,HTP,RCT,GCT, DTP,DTF,CTP,CTF,RPC, LTC,GMT,GT};
 
 sequence L1HardwareValidation = {
