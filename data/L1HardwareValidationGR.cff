@@ -9,7 +9,7 @@
 
 // ECAL sequence
 // requires ecalDigis only
-module valEcalTriggerPrimitiveDigis = ecalTriggerPrimitiveDigis from "SimCalorimetry/EcalTrigPrimProducers/data/ecalTriggerPrimitiveDigis.cfi"
+module valEcalTriggerPrimitiveDigis = simEcalTriggerPrimitiveDigis from "SimCalorimetry/EcalTrigPrimProducers/data/ecalTriggerPrimitiveDigis.cfi"
 replace valEcalTriggerPrimitiveDigis.Label = "ecalDigis"
 replace valEcalTriggerPrimitiveDigis.InstanceEB = "ebDigis"
 replace valEcalTriggerPrimitiveDigis.InstanceEE = "eeDigis"
@@ -21,7 +21,7 @@ sequence deEcal = {
 
 // HCAL sequence
 // requires hcalDigis only
-module valHcalTriggerPrimitiveDigis = hcalTriggerPrimitiveDigis from "SimCalorimetry/HcalTrigPrimProducers/data/hcaltpdigi.cfi"
+module valHcalTriggerPrimitiveDigis = simHcalTriggerPrimitiveDigis from "SimCalorimetry/HcalTrigPrimProducers/data/hcaltpdigi.cfi"
 replace valHcalTriggerPrimitiveDigis.inputLabel = hcalDigis
 
 sequence deHcal = {
@@ -33,7 +33,7 @@ sequence deHcal = {
 // requires ecalDigis and hcalDigis
 include "L1Trigger/RegionalCaloTrigger/data/maskedRctInputDigis.cfi"
 #cruzet-i: no ecal tp's, need emulation instead:
-replace maskedRctInputDigis.ecalDigisLabel = ecalDigis
+replace maskedRctInputDigis.ecalDigisLabel = valEcalTriggerPrimitiveDigis //ecalDigis
 replace maskedRctInputDigis.hcalDigisLabel = hcalDigis
 module valRctDigis = rctDigis from "L1Trigger/RegionalCaloTrigger/data/rctDigis.cfi"
 replace valRctDigis.ecalDigisLabel = maskedRctInputDigis
@@ -152,7 +152,7 @@ sequence deGt = {
 include "L1Trigger/HardwareValidation/data/L1Comparator.cfi"
 
 #note: cruzet-i, no tp's readout
-replace l1compare.ETPsourceData = ecalDigis
+replace l1compare.ETPsourceData = valEcalTriggerPrimitiveDigis //ecalDigis
 replace l1compare.ETPsourceEmul = valEcalTriggerPrimitiveDigis
 
 replace l1compare.HTPsourceData = hcalDigis
