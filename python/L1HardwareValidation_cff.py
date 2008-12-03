@@ -37,7 +37,8 @@ valGctDigis = L1Trigger.GlobalCaloTrigger.gctDigis_cfi.gctDigis.clone()
 
 # DT TPG sequence
 # requires muonDTDigis only
-import L1Trigger.DTTrigger.dtTriggerPrimitiveDigis_cfi
+#import L1Trigger.DTTrigger.dtTriggerPrimitiveDigis_cfi
+from L1Trigger.DTTrigger.dtTriggerPrimitiveDigis_cfi import *
 valDtTriggerPrimitiveDigis = L1Trigger.DTTrigger.dtTriggerPrimitiveDigis_cfi.dtTriggerPrimitiveDigis.clone()
 
 # DT TF sequence
@@ -65,7 +66,8 @@ muonCscMon = L1Trigger.HardwareValidation.MuonCandProducerMon_cfi.muonCandMon.cl
 
 # RPC sequence
 # requires muonRPCDigis only
-import L1Trigger.RPCTrigger.rpcTriggerDigis_cfi
+#import L1Trigger.RPCTrigger.rpcTriggerDigis_cfi
+from L1Trigger.RPCTrigger.rpcTriggerDigis_cff import *
 valRpcTriggerDigis = L1Trigger.RPCTrigger.rpcTriggerDigis_cfi.rpcTriggerDigis.clone()
 
 # GMT sequence
@@ -104,6 +106,15 @@ valGmtDigis.RPCbCandidates = cms.InputTag("gtDigis","RPCb")
 valGmtDigis.RPCfCandidates = cms.InputTag("gtDigis","RPCf")
 valGtDigis.GmtInputTag = 'gtDigis'
 valGtDigis.GctInputTag = 'gctDigis'
+
+#Emulator settings
+valHcalTriggerPrimitiveDigis.FG_threshold = cms.uint32(12)
+EcalTrigPrimESProducer.DatabaseFile = 'TPG_startup.txt.gz'
+HcalTPGCoderULUT.read_Ascii_LUTs = True
+HcalTPGCoderULUT.inputLUTs = 'L1Trigger/HardwareValidation/hwtest/globrun/HcalCRAFTPhysicsV2.dat'
+valRctDigis.UseMCAsInput = False
+valRctDigis.HFShift = -2
+valRctDigis.HBShift = 1
 
 # the comparator module
 # parameters are specified in cfi
