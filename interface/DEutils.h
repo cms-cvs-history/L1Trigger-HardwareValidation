@@ -94,10 +94,7 @@ DEutils<HcalTrigPrimDigiCollection>::DEDigi(col_cit itd,  col_cit itm, int aflag
   L1DataEmulDigi digi(dedefs::HTP,cid, x1,x2,0, errt);
   unsigned int dw = (aflag==4)?0:itd->t0().raw();
   unsigned int ew = (aflag==3)?0:itm->t0().raw();
-  //16-bit; bits 10:9 not set(?); 
-  // bits 15:11 not accessible in emulator (slb/channel ids)
-  unsigned int mask = 0x01ff;
-  dw &= mask; ew &= mask; 
+  dw &= 0xf9ff; ew &= 0xf9ff; //16-bit (bits 10, 11 not set !?)
   digi.setData(dw,ew); 
   int de = (aflag==4)?0:itd->SOI_compressedEt();
   int ee = (aflag==3)?0:itm->SOI_compressedEt();
@@ -110,10 +107,9 @@ DEutils<L1CaloEmCollection>::DEDigi(col_cit itd,  col_cit itm, int aflag) {
   int cid = de_type();
   int errt = aflag;
   double x1, x2, x3(0.);
-  // global index ieta (0-21), iphi (0-17), card (0-6)
+  // global index ieta (0-21), iphi (0-17)
   x1 = (aflag!=4) ? itd->regionId().iphi() : itm->regionId().iphi();
   x2 = (aflag!=4) ? itd->regionId().ieta() : itm->regionId().ieta();
-  x3 = (aflag!=4) ? itd->regionId().rctCard() : itm->regionId().rctCard();
   //alternative coordinates: rctCrate(), rctCard(), index()
   L1DataEmulDigi digi(dedefs::RCT,cid, x1,x2,x3, errt);
   unsigned int dw = itd->raw(); 
@@ -142,20 +138,16 @@ template<> inline L1DataEmulDigi
 DEutils<L1CaloRegionCollection>::DEDigi(col_cit itd,  col_cit itm, int aflag) {
   int cid = de_type();
   int errt = aflag;
-  double x1, x2, x3(0.);
-  x1 = (aflag!=4) ? itd->id().iphi() : itm->id().iphi();
-  x2 = (aflag!=4) ? itd->id().ieta() : itm->id().ieta();
-  x3 = (aflag!=4) ? itd->id().rctCard() : itm->id().rctCard();
+  double x1 = (aflag!=4) ? itd->rctCrate() : itm->rctCrate(); //rctPhi()
+  double x2 = (aflag!=4) ? itd->rctCard () : itm->rctCard (); //rctEta()
+  double x3 = (aflag!=4) ? itd->rctRegionIndex() : itm->rctRegionIndex();
   L1DataEmulDigi digi(dedefs::RCT,cid, x1,x2,x3, errt);
   unsigned int dw = itd->raw(); 
   unsigned int ew = itm->raw();
-  unsigned int mask = 0x3fff;
-  //mask (temporary) mip(12), quiet (13)
-  mask = 0x0fff;
-  dw &= mask;
+  dw &= 0x3fff;
   dw += (((itd->id().ieta())&0x1f)<<14);
   dw += (((itd->id().iphi())&0x1f)<<19);
-  ew &= mask;
+  ew &= 0x3fff;
   ew += (((itm->id().ieta())&0x1f)<<14);
   ew += (((itm->id().iphi())&0x1f)<<19);
   dw = (aflag==4)?0:dw;
@@ -536,9 +528,8 @@ DEutils<EcalTrigPrimDigiCollection>::de_equal(const cand_type& lhs, const cand_t
 template <> inline bool 
 DEutils<HcalTrigPrimDigiCollection>::de_equal(const cand_type& lhs, const cand_type& rhs) {
   bool val = true;
-  unsigned int mask = 0x01ff;
-  val &= ((lhs.t0().raw()&mask) == (rhs.t0().raw()&mask));
-  val &= (lhs.id().rawId()      == rhs.id().rawId());
+  val &= (lhs.t0().raw()     == rhs.t0().raw());
+  val &= (lhs.id().rawId()   == rhs.id().rawId());
   return val;
 }
 
@@ -563,9 +554,8 @@ DEutils<L1CaloRegionCollection>::de_equal(const cand_type& lhs, const cand_type&
   if (!lhs.id().isHf()){
     val &= (lhs.overFlow()  == rhs.overFlow() );
     val &= (lhs.tauVeto()   == rhs.tauVeto()  );
-    //mask temporarily (!) mip and quiet bits
-    //val &= (lhs.mip()       == rhs.mip()      );
-    //val &= (lhs.quiet()     == rhs.quiet()    );
+    val &= (lhs.mip()       == rhs.mip()      );
+    val &= (lhs.quiet()     == rhs.quiet()    );
     val &= (lhs.rctCard()   == rhs.rctCard()  );
   } else {
     val &= (lhs.fineGrain() == rhs.fineGrain());
@@ -845,8 +835,7 @@ inline bool DEutils<EcalTrigPrimDigiCollection>::is_empty(col_cit it) const {
 
 template<>
 inline bool DEutils<HcalTrigPrimDigiCollection>::is_empty(col_cit it) const { 
-  unsigned int mask = 0x01ff;
-  return (  it->size()==0 || (it->t0().raw()&mask==0) || it->SOI_compressedEt()==0 );
+  return (  it->size()==0 || it->t0().raw()==0 || it->SOI_compressedEt()==0 );
 }
 
 template<>
