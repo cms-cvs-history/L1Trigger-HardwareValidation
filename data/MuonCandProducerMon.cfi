@@ -1,5 +1,0 @@
-module muonCandMon = MuonCandProducerMon {
-    untracked InputTag CSCinput = csctfdigis
-    untracked InputTag DTinput = dttfdigis
-    untracked int32 VerboseFlag = 0
-}
