@@ -1,7 +1,0 @@
-module l1dummy = L1DummyProducer {
-    untracked double EnergyBase = 100.
-    untracked double EnergySigm = 10.
-    untracked int32  VerboseFlag = 0
-    untracked vuint32 DO_SYSTEM = { 0,0,0,0,0,0,0,0,0,0,0,0 }
-    #sys list {ETP,HTP,RCT,GCT,DTP,DTF,CTP,CTF,RPC,LTC,GMT,GT};
-}

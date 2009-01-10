@@ -1,5 +1,0 @@
-module l1defilter = L1DEFilter {
-    InputTag DataEmulCompareSource = l1Compare
-    untracked vuint32 FlagSystems  = { 0,0,0,0,0,0,0,0,0,0,0,0 }
-    #ETP,HTP,RCT,GCT,  DTP,DTF,CTP,CTF,RPC,  LTC,GMT,GT
-}
