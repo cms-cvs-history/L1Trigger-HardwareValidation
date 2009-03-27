@@ -82,14 +82,19 @@ valGtDigis = L1Trigger.GlobalTrigger.gtDigis_cfi.gtDigis.clone()
 valEcalTriggerPrimitiveDigis.Label = 'ecalDigis'
 valEcalTriggerPrimitiveDigis.InstanceEB = 'ebDigis'
 valEcalTriggerPrimitiveDigis.InstanceEE = 'eeDigis'
+
 valHcalTriggerPrimitiveDigis.inputLabel = 'hcalDigis'
+
 valRctDigis.ecalDigisLabel = 'ecalDigis:EcalTriggerPrimitives'
 valRctDigis.hcalDigisLabel = 'hcalDigis'
+
 valGctDigis.inputLabel = 'gctDigis'
+
 #valDtTriggerPrimitiveDigis.inputLabel = 'muonDTDigis'
 valDttfDigis.DTDigi_Source = 'dttfDigis'
 valDttfDigis.CSCStub_Source = 'valCsctfTrackDigis'
 muonDtMon.CSCinput = 'dttfDigis'
+
 valCscTriggerPrimitiveDigis.CSCComparatorDigiProducer = cms.InputTag("muonCSCDigis","MuonCSCComparatorDigi")
 valCscTriggerPrimitiveDigis.CSCWireDigiProducer = cms.InputTag("muonCSCDigis","MuonCSCWireDigi")
 valCsctfTrackDigis.SectorReceiverInput = 'csctfDigis'
@@ -97,11 +102,15 @@ valCsctfTrackDigis.SectorReceiverInput = 'csctfDigis'
 valCsctfTrackDigis.DTproducer = 'dttfDigis'
 valCsctfDigis.CSCTrackProducer = 'valCsctfTrackDigis'
 muonCscMon.CSCinput = 'csctfDigis'
+
 valRpcTriggerDigis.label = 'muonRPCDigis'
+
 valGmtDigis.DTCandidates = cms.InputTag("gtDigis","DT")
 valGmtDigis.CSCCandidates = cms.InputTag("gtDigis","CSC")
 valGmtDigis.RPCbCandidates = cms.InputTag("gtDigis","RPCb")
 valGmtDigis.RPCfCandidates = cms.InputTag("gtDigis","RPCf")
+valGmtDigis.MipIsoData = 'gctDigis'
+
 valGtDigis.GmtInputTag = 'gtDigis'
 valGtDigis.GctInputTag = 'gctDigis'
 
