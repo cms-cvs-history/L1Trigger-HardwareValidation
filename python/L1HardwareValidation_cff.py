@@ -120,8 +120,8 @@ EcalTrigPrimESProducer.DatabaseFile = 'TPG_startup.txt.gz'
 HcalTPGCoderULUT.read_Ascii_LUTs = True
 HcalTPGCoderULUT.inputLUTs = 'L1Trigger/HardwareValidation/hwtest/globrun/HcalCRAFTPhysicsV2.dat'
 valRctDigis.UseMCAsInput = False
-valRctDigis.HFShift = -2
-valRctDigis.HBShift = 1
+valRctDigis.HFShift = 0
+valRctDigis.HBShift = 0
 
 # the comparator module
 # parameters are specified in cfi
