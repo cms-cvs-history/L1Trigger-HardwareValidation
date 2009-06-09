@@ -980,7 +980,8 @@ L1Comparator::compareCollections(edm::Handle<L1GlobalTriggerReadoutRecord> data,
 
   if(m_dumpMode==0 && match)
     return match;    
-  
+
+  /*
   //expand to check mismatching  stage
 
   //need to create new objects due to lack of suitable accessors
@@ -1173,6 +1174,7 @@ L1Comparator::compareCollections(edm::Handle<L1GlobalTriggerReadoutRecord> data,
     m_dumpFile << "---debug: print full gt record Done.---\n\n";
   }
 
+  */
   char ok[10];
   if(match) sprintf(ok,"successful");
   else      sprintf(ok,"failed");
